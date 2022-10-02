@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // デバッグ用
-        GameStart();
+        //GameStart();
     }
 
     // Update is called once per frame
@@ -41,11 +41,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameStart()
     {
+        Debug.Log("started");
         // 開始フラグを立てる
         isStarted = true;
 
         // TODO: コンポーネントを付ける
         GameObject.FindGameObjectsWithTag("Player")[0].AddComponent<PlayerController>();
+        gameObject.AddComponent<ItemGenerator>();
     }
 
     /// <summary>
@@ -67,6 +69,17 @@ public class GameManager : MonoBehaviour
     public void AddScore(int plusScore)
     {
         score += plusScore;
+    }
+
+    /// <summary>
+    /// りんごを置いたときに加算するスコアを求める
+    /// </summary>
+    /// <param name="numApple">持っているりんごの数</param>
+    /// <returns>加算するスコア</returns>
+    public int calcPutScore(int numApple)
+    {
+        float gainScore = 200 * Mathf.Pow(1.1f, numApple) * numApple;
+        return Mathf.CeilToInt(gainScore);
     }
 
 }
