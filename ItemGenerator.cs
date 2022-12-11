@@ -21,14 +21,13 @@ public class ItemGenerator : MonoBehaviour
         manager = gameObject.GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         if (manager.isStarted)
         {
             // アイテムを生成する抽選
             // TODO: ここの値は調整する
-            if (Random.Range(0, 300) == 1)
+            if (Random.Range(0, 100) == 1)
             {
                 GameObject item; // 生成するアイテム
 
@@ -40,8 +39,9 @@ public class ItemGenerator : MonoBehaviour
                 }
                 else
                 {
-                    // 石の場合
-                    item = Resources.Load<GameObject>("stone");
+                    // 石の場合->木の枝に変更
+                    //item = Resources.Load<GameObject>("stone");
+                    item = Resources.Load<GameObject>("edge");
                 }
 
                 // 降らせる位置の決定
@@ -59,3 +59,4 @@ public class ItemGenerator : MonoBehaviour
         }
     }
 }
+

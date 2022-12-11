@@ -6,17 +6,31 @@ public class GameManager : MonoBehaviour
 {
     //　フィールド
     // 残り時間
-    public float resTime { get; private set; } = 60f;
+    public float resTime { get; private set; } = 65f;
     // ゲームの開始状態
     public bool isStarted { get; private set; } = false;
+    public bool isAbleToStart { get; private set; } = true;
     //スコア
     public int score { get;  private set; } = 0;
+
+    private SoundManager1 soundManager;
 
     // Start is called before the first frame update
     void Start()
     {
         // デバッグ用
         //GameStart();
+        soundManager = gameObject.GetComponent<SoundManager1>();
+        soundManager.SetVolume(Config.volume);
+    }
+
+    /// <summary>
+    /// 指定されたSEを鳴らす
+    /// </summary>
+    /// <param name="SEname">SEの名前</param>
+    public void playSE(string SEname)
+    {
+        soundManager.PlaySE(SEname);
     }
 
     // Update is called once per frame
@@ -44,10 +58,14 @@ public class GameManager : MonoBehaviour
         Debug.Log("started");
         // 開始フラグを立てる
         isStarted = true;
-
+        // SEを鳴らす
+        playSE("Whistle");
+        soundManager.StartBGM();
         // TODO: コンポーネントを付ける
         GameObject.FindGameObjectsWithTag("Player")[0].AddComponent<PlayerController>();
         gameObject.AddComponent<ItemGenerator>();
+
+        isAbleToStart = false;
     }
 
     /// <summary>
@@ -58,10 +76,26 @@ public class GameManager : MonoBehaviour
     {
         // 開始フラグを折る
         isStarted = false;
-
-        // TODO: コンポーネントを取る, メッセージを出す
+        // todo: 笛の音か何か鳴らす
+        playSE("Whistle");
+        //gameObject.GetComponent<UIController>().ShowResult(score);
+        Invoke(nameof(CallShowResult), 1f);
+        Invoke(nameof(CallStopBGM), 1.5f);
+        GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerController>().enabled = false;
     }
 
+    private void CallStopBGM()
+    {
+        soundManager.StopBGM();
+    }
+
+    /// <summary>
+    /// 結果画面を表示する(GameEnd()からの呼び出し用
+    /// </summary>
+    private void CallShowResult()
+    {
+        gameObject.GetComponent<UIController>().ShowResult(score);
+    }
     /// <summary>
     /// スコアを加算する
     /// </summary>
